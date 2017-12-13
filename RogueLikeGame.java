@@ -4,7 +4,7 @@ import java.awt.Color;
 
 class RogueLikeGame {
 	public static void main(String[] args) {
-		JFrame fr = new JFrame("RogueLike");
+		JFrame fr = new JFrame("Dungeon");
 		
 		fr.setSize(400, 400);
 		fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
