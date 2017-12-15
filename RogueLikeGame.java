@@ -15,47 +15,63 @@ class RogueLikeGame {
 		panel.setOpaque(false);
 		fr.add(panel);
 		
+		fr.setResizable(false);
 		fr.setVisible(true);
 	}
 }
 
 class RogueLikeGamePanel extends JPanel {
 	char map[][];
-	int mapX = 8, mapY = 8;
-	String mapData[] = {"        ",
-			    "   WWWW ",
-			    "   WWWW ",
-			    "   WWW  ",
-			    " WWWWW W",
-			    "   WW  W",
-			    " W  WWWW",
-			    " WW     "};
+	int mapX = 20, mapY = 20;
+	String mapData[] = {"                    ",
+			    "  WWWWWWW      WWWW ",
+			    "  W            WWWW ",
+			    "   WWW              ",
+			    " WWWWW             W",
+			    "   WW              W",
+			    " W  WWW            W",
+			    " WW                 ",
+			    "                    ",
+			    "W                   ",
+			    "                    ",
+			    "                    ",
+			    "                    ",
+			    "                    ",
+			    "                    ",
+			    "                    ",
+			    "                    ",
+			    "                    ",
+			    "                    ",
+			    "                   W"};
 	
 	RogueLikeGamePanel() {
-		map = new char[mapY+2][mapX+2];
+		map = new char[2*(mapY+10)][2*(mapX+10)];
 
-		for(int x=0; x<mapX+2; x++) {
-			map[0][x] = 'W';
-			map[mapY+1][x] = 'W';
+		for(int w=0; w<5; w++) {
+			for(int x=0; x<mapX+10; x++) {
+				map[w][x] = 'W';
+				map[mapY+6+w][x] = 'W';
+			}
+			for(int y=0; y<mapY+10; y++) {
+				map[y][w] = 'W';
+				map[y][mapY+6+w] = 'W';
+			}
 		}
-		for(int y=0; y<mapY+2; y++) {
-			map[y][0] = 'W';
-			map[y][mapY+1] = 'W';
-		}
-		for(int y=1; y<=mapY; y++) {
-			for(int x=1; x<mapX+1; x++) {
-				map[y][x] = mapData[y-1].charAt(x-1);
+
+		for(int y=5; y<mapY+5; y++) {
+			for(int x=5; x<mapX+5; x++) {
+				map[y][x] = mapData[y-5].charAt(x-5);
 			}
 		}
  	}
  
  	@Override
  	public void paintComponent(Graphics g) {
-		for(int y=1; y<=mapY; y++) {
-			for(int x=1; x<=mapX; x++) {
-				int xx = 40*x+20, yy = 40*y+20;
+		for(int y=0; y<mapY+2; y++) {
+			for(int x=0; x<mapX+2; x++) {
+				int xx = 40*x, yy = 40*y;
 				switch(map[y][x]) {
-					case 'W' : g.setColor(Color.white);
+					case 'W' : g.setColor(new Color(100, 40, 30));
 						   g.fillRect(xx, yy, 26, 10);
 						   g.fillRect(xx+32, yy, 8, 10);
 						   g.fillRect(xx, yy+15, 10, 10);
