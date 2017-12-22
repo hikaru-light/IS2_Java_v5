@@ -3,11 +3,15 @@ import java.awt.Color;
 import javax.swing.JPanel;
 import java.awt.Graphics;
 
+import java.io.*;
+import java.awt.image.*;
+import javax.imageio.*;
+
 class RogueLikeGame {
 	public static void main(String[] args) {
 		JFrame fr = new JFrame("Dungeon");
 		
-		fr.setSize(400, 400);
+		fr.setSize(440, 464);
 		fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		fr.getContentPane().setBackground(new Color(0, 0, 0));
 
@@ -23,7 +27,7 @@ class RogueLikeGame {
 class RogueLikeGamePanel extends JPanel {
 	char map[][];
 	int mapX = 20, mapY = 20;
-	String mapData[] = {"                    ",
+	String mapData[] = {"   P                ",
 			    "  WWWWWWW      WWWW ",
 			    "  W            WWWW ",
 			    "   WWW              ",
@@ -43,34 +47,48 @@ class RogueLikeGamePanel extends JPanel {
 			    "                    ",
 			    "                    ",
 			    "                   W"};
+	BufferedImage playerImg;
+	int playerX, playerY;
 	
 	RogueLikeGamePanel() {
-		map = new char[2*(mapY+10)][2*(mapX+10)];
+		try {
+			File playerFile = new File("./src/img/player.png");
+			playerImg = ImageIO.read(playerFile);
+		} catch(IOException e) {
+			System.err.println(e.toString());
+		}
+
+		map = new char[mapY+10][mapX+10];
 
 		for(int w=0; w<5; w++) {
 			for(int x=0; x<mapX+10; x++) {
 				map[w][x] = 'W';
-				map[mapY+6+w][x] = 'W';
+				map[mapY+5+w][x] = 'W';
 			}
 			for(int y=0; y<mapY+10; y++) {
 				map[y][w] = 'W';
-				map[y][mapY+6+w] = 'W';
+				map[y][mapX+5+w] = 'W';
 			}
 		}
 
 		for(int y=5; y<mapY+5; y++) {
 			for(int x=5; x<mapX+5; x++) {
 				map[y][x] = mapData[y-5].charAt(x-5);
+				if(map[y][x] == 'P') {
+					playerSet(x, y);
+				}
 			}
 		}
+
+		// setFocusable(true);
  	}
  
  	@Override
  	public void paintComponent(Graphics g) {
-		for(int y=0; y<mapY+2; y++) {
-			for(int x=0; x<mapX+2; x++) {
-				int xx = 40*x, yy = 40*y;
-				switch(map[y][x]) {
+		for(int y=-5; y<=5; y++) {
+			for(int x=-5; x<=5; x++) {
+				int xx = 40*(x+5), yy = 40*(y+5);
+				switch(map[playerY+y][playerX+x]) {
 					case 'W' : g.setColor(new Color(100, 40, 30));
 						   g.fillRect(xx, yy, 26, 10);
 						   g.fillRect(xx+32, yy, 8, 10);
@@ -82,6 +100,18 @@ class RogueLikeGamePanel extends JPanel {
 				}
 			}
 		}
+
+		playerDraw(g);
  	}
-   }
+
+	void playerSet(int x, int y) {
+		playerX = x;
+		playerY = y;
+	}
+
+	void playerDraw(Graphics g) {
+		g.drawImage(playerImg, 200, 200, this);
+	}
+
+}
 
