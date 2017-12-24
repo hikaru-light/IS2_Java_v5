@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.io.*;
 import java.awt.image.*;
 import javax.imageio.*;
+import java.awt.event.*;
 
 class RogueLikeGame {
 	public static void main(String[] args) {
@@ -24,10 +25,10 @@ class RogueLikeGame {
 	}
 }
 
-class RogueLikeGamePanel extends JPanel {
+class RogueLikeGamePanel extends JPanel implements KeyListener {
 	char map[][];
 	int mapX = 20, mapY = 20;
-	String mapData[] = {"   P                ",
+	String mapData[] = {"P                   ",
 			    "  WWWWWWW      WWWW ",
 			    "  W            WWWW ",
 			    "   WWW              ",
@@ -49,6 +50,7 @@ class RogueLikeGamePanel extends JPanel {
 			    "                   W"};
 	BufferedImage playerImg;
 	int playerX, playerY;
+	int range = 3;
 	
 	RogueLikeGamePanel() {
 		try {
@@ -63,11 +65,11 @@ class RogueLikeGamePanel extends JPanel {
 		for(int w=0; w<5; w++) {
 			for(int x=0; x<mapX+10; x++) {
 				map[w][x] = 'W';
-				map[mapY+5+w][x] = 'W';
+				map[(mapY+5)+w][x] = 'W';
 			}
 			for(int y=0; y<mapY+10; y++) {
 				map[y][w] = 'W';
-				map[y][mapX+5+w] = 'W';
+				map[y][(mapX+5)+w] = 'W';
 			}
 		}
 
@@ -80,13 +82,14 @@ class RogueLikeGamePanel extends JPanel {
 			}
 		}
 
-		// setFocusable(true);
+		addKeyListener(this);
+		setFocusable(true);
  	}
  
  	@Override
  	public void paintComponent(Graphics g) {
-		for(int y=-5; y<=5; y++) {
-			for(int x=-5; x<=5; x++) {
+		for(int y=-range; y<=range; y++) {
+			for(int x=-range; x<=range; x++) {
 				int xx = 40*(x+5), yy = 40*(y+5);
 				switch(map[playerY+y][playerX+x]) {
 					case 'W' : g.setColor(new Color(100, 40, 30));
@@ -113,5 +116,61 @@ class RogueLikeGamePanel extends JPanel {
 		g.drawImage(playerImg, 200, 200, this);
 	}
 
+	void playerMove(int dir) {
+		int dx = 0, dy = 0;
+
+		switch(dir) {
+			case 0: dx = 1;
+				break;
+			case 1: dy = -1;
+				break;
+			case 2: dx = -1;
+				break;
+			case 3: dy = 1;
+				break;
+		}
+
+		if(dx == 0 && dy == 0) {
+			return;
+		}
+
+		if(map[playerY+dy][playerX+dx] == 'W') {
+			return;
+		}
+
+		playerX += dx;
+		playerY += dy;
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		int key = e.getKeyCode();
+		int dir = -1;
+
+		switch(key) {
+			case KeyEvent.VK_LEFT: dir = 2;
+				break;
+			case KeyEvent.VK_RIGHT: dir = 0;
+				break;
+			case KeyEvent.VK_UP: dir = 1;
+				break;
+			case KeyEvent.VK_DOWN: dir = 3;
+				break;
+		}
+
+		if(dir >= 0) {
+			playerMove(dir);
+		}
+
+		repaint();
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
 }
 
