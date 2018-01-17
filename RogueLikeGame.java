@@ -7,6 +7,7 @@ import java.io.*;
 import java.awt.image.*;
 import javax.imageio.*;
 import java.awt.event.*;
+import java.lang.Math.*;
 
 class RogueLikeGame {
 	public static void main(String[] args) {
@@ -28,34 +29,41 @@ class RogueLikeGame {
 class RogueLikeGamePanel extends JPanel implements KeyListener {
 	char map[][];
 	int mapX = 20, mapY = 20;
-	String mapData[] = {"P                   ",
-			    "  WWWWWWW      WWWW ",
-			    "  W            WWWW ",
-			    "   WWW              ",
-			    " WWWWW             W",
-			    "   WW              W",
-			    " W  WWW            W",
-			    " WW                 ",
-			    "                    ",
-			    "W                   ",
-			    "                    ",
-			    "                    ",
-			    "                    ",
-			    "                    ",
+	String mapData[] = {"PWWWWWW       WWWWW ",
+			    " WWWWWWWWWWWW WWWWW ",
+			    " WWWWWWWWWWWW WWWWW ",
+			    " WWWWWWWWWWWW WWWWW ",
+			    " WWWWWWWWWWWW       ",
+			    " WWWWWWWWWWWW WWWWW ",
+			    " WWWWWWWWWWWW WWWWW ",
+			    " WWWW         WWWWW ",
+			    " WWWW WWWWWWWWWWWWW ",
+			    " WWWW WWWWWWWWWWWWW ",
+			    " WWWW WWWWWWWWWWWWW ",
+			    " WWWW WWWWWWWWWWWWW ",
+			    "              WWWWW ",
+			    "WWWWWWWWWWWWWWW     ",
 			    "                    ",
 			    "                    ",
 			    "                    ",
 			    "                    ",
 			    "                    ",
 			    "                   W"};
-	BufferedImage playerImg;
+	BufferedImage[][] playerImg = new BufferedImage[4][4];
 	int playerX, playerY;
+	int playerDirNo, playerNo;
+
+	int count = 1;
 	int range = 3;
 	
 	RogueLikeGamePanel() {
 		try {
-			File playerFile = new File("./src/img/player.png");
-			playerImg = ImageIO.read(playerFile);
+			for(int i=0; i<4; i++) {
+				for(int j=0; j<4; j++) {
+					File playerFile = new File("./src/img/player"+i+j+".png");
+					playerImg[i][j] = ImageIO.read(playerFile);
+				}
+			}
 		} catch(IOException e) {
 			System.err.println(e.toString());
 		}
@@ -88,17 +96,43 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
  
  	@Override
  	public void paintComponent(Graphics g) {
+		if(count > -100) {
+			range = 5;
+		}
+
+		if(count > -50) {
+			range = 4;
+		}
+
+		if(count > 0) {
+			range = 3;
+		}
+
+		if(count > 50) {
+			range = 2;
+		}
+		
+		if(count > 100) {
+			range = 1;
+		}
+			
 		for(int y=-range; y<=range; y++) {
 			for(int x=-range; x<=range; x++) {
 				int xx = 40*(x+5), yy = 40*(y+5);
 				switch(map[playerY+y][playerX+x]) {
-					case 'W' : g.setColor(new Color(100, 40, 30));
+					case 'W' : g.setColor(new Color(100+(int)(Math.random()*20), 35+(int)(Math.random()*5), 25+(int)(Math.random()*5)));
 						   g.fillRect(xx, yy, 26, 10);
 						   g.fillRect(xx+32, yy, 8, 10);
 						   g.fillRect(xx, yy+15, 10, 10);
 						   g.fillRect(xx+16, yy+15, 24, 10);
 						   g.fillRect(xx, yy+30, 18, 10);
 						   g.fillRect(xx+24, yy+30, 16, 10);
+						   break;
+					case ' ' : g.setColor(new Color(40, 30, 25));
+						   g.fillRect(xx, yy, 40, 40);
+						   break;
+					case 'P' : g.setColor(new Color(40, 30, 25));
+						   g.fillRect(xx, yy, 40, 40);
 						   break;
 				}
 			}
@@ -113,7 +147,11 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 	}
 
 	void playerDraw(Graphics g) {
-		g.drawImage(playerImg, 200, 200, this);
+		if(playerNo>3) {
+			playerNo = 0;
+		}
+
+		g.drawImage(playerImg[playerDirNo][playerNo], 206, 201, this);
 	}
 
 	void playerMove(int dir) {
@@ -137,36 +175,44 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 		if(map[playerY+dy][playerX+dx] == 'W') {
 			return;
 		}
-
 		playerX += dx;
 		playerY += dy;
+		
+		count += 1;
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
+
 		int dir = -1;
 
 		switch(key) {
-			case KeyEvent.VK_LEFT: dir = 2;
+			case KeyEvent.VK_LEFT: dir = 2; playerDirNo = 2; playerNo++;
 				break;
-			case KeyEvent.VK_RIGHT: dir = 0;
+			case KeyEvent.VK_RIGHT: dir = 0; playerDirNo = 3; playerNo++;
 				break;
-			case KeyEvent.VK_UP: dir = 1;
+			case KeyEvent.VK_UP: dir = 1; playerDirNo = 1; playerNo++;
 				break;
-			case KeyEvent.VK_DOWN: dir = 3;
+			case KeyEvent.VK_DOWN: dir = 3; playerDirNo = 0; playerNo++;
 				break;
 		}
+
+		// try {
+		//         Thread.sleep(30);
+		// } catch (InterruptedException e) {
+		// 	System.err.println(e.toString());
+		// }
 
 		if(dir >= 0) {
 			playerMove(dir);
 		}
 
 		repaint();
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
 	}
 
 	@Override
