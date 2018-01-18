@@ -41,7 +41,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 			    " WWWW WWWWWWWWWWWWW WWWWWWWWWW",
 			    "              WWWWW WWWWWWWWWW",
 			    "WWWWWWWWWWWWWWWWWWW WWWWWWWWWW",
-			    "WWW      WWWWWWWWWW WWWWWWWWWW",
+			    "WWW     LWWWWWWWWWW WWWWWWWWWW",
 			    "WWW WWWWWWWWWWWWWWW WWWWWWWWWW",
 			    "WWW WWWWWWWWWWWWWWW WWWWWWWWWW",
 			    "WWW                 WWWWWWWWWW",
@@ -49,6 +49,8 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 			    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"};
 
 	BufferedImage[][] playerImg = new BufferedImage[4][4];
+	BufferedImage[] lampImg = new BufferedImage[5];
+
 	int playerX, playerY;
 	int playerDirNo, playerNo;
 
@@ -62,6 +64,11 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 					File playerFile = new File("./src/img/player"+i+j+".png");
 					playerImg[i][j] = ImageIO.read(playerFile);
 				}
+			}
+
+			for(int i=0; i<5; i++) {
+				File lampFile = new File("./src/img/lamp"+i+".png");
+				lampImg[i] = ImageIO.read(lampFile);
 			}
 		} catch(IOException e) {
 			System.err.println(e.toString());
@@ -109,11 +116,17 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 						   g.fillRect(xx, yy+30, 18, 10);
 						   g.fillRect(xx+24, yy+30, 16, 10);
 						   break;
+
 					case ' ' : g.setColor(new Color(40, 30, 25));
 						   g.fillRect(xx, yy, 40, 40);
 						   break;
 					case 'P' : g.setColor(new Color(40, 30, 25));
 						   g.fillRect(xx, yy, 40, 40);
+						   break;
+
+					case 'L' : g.setColor(new Color(40, 30, 25));
+						   g.fillRect(xx, yy, 40, 40);
+						   g.drawImage(lampImg[0], xx+10, yy, this);
 						   break;
 				}
 			}
@@ -156,9 +169,16 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 		if(map[playerY+dy][playerX+dx] == 'W') {
 			return;
 		}
+
+
+		if(map[playerY+dy][playerX+dx] == 'L') {
+			map[playerY+dy][playerX+dx] = ' ';
+			steps -= 50;
+		}
+
 		playerX += dx;
 		playerY += dy;
-		
+
 		steps += 1;
 	}
 
