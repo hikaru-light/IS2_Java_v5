@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 class RogueLikeGame {
 	public static void main(String[] args) {
 		JFrame fr = new JFrame("Dungeon");
-		
+
 		fr.setSize(440, 464);
 		fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		fr.getContentPane().setBackground(new Color(0, 0, 0));
@@ -18,7 +18,7 @@ class RogueLikeGame {
 		RogueLikeGamePanel panel = new RogueLikeGamePanel();
 		panel.setOpaque(false);
 		fr.add(panel);
-		
+
 		fr.setResizable(false);
 		fr.setVisible(true);
 	}
@@ -56,7 +56,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 
 	int steps = 1;
 	int range = 3;
-	
+
 	RogueLikeGamePanel() {
 		try {
 			for(int i=0; i<4; i++) {
@@ -99,7 +99,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 		addKeyListener(this);
 		setFocusable(true);
  	}
- 
+
  	@Override
  	public void paintComponent(Graphics g) {
 		countSteps();
@@ -173,7 +173,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 
 		if(map[playerY+dy][playerX+dx] == 'L') {
 			map[playerY+dy][playerX+dx] = ' ';
-			steps -= 50;
+			steps = 0;
 		}
 
 		playerX += dx;
@@ -225,14 +225,6 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 	}
 
 	void countSteps() {
-		if(steps > -100) {
-			range = 5;
-		}
-
-		if(steps > -50) {
-			range = 4;
-		}
-
 		if(steps > 0) {
 			range = 3;
 		}
@@ -240,10 +232,9 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 		if(steps > 50) {
 			range = 2;
 		}
-		
+
 		if(steps > 100) {
 			range = 1;
 		}
 	}
 }
-
