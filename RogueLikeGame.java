@@ -1,13 +1,11 @@
-import javax.swing.JFrame;
-import java.awt.Color;
-import javax.swing.JPanel;
-import java.awt.Graphics;
+import javax.swing.*;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.*;
 
 import java.io.*;
-import java.awt.image.*;
-import javax.imageio.*;
-import java.awt.event.*;
-import java.lang.Math.*;
+import javax.imageio.ImageIO;
 
 class RogueLikeGame {
 	public static void main(String[] args) {
@@ -28,27 +26,27 @@ class RogueLikeGame {
 
 class RogueLikeGamePanel extends JPanel implements KeyListener {
 	char map[][];
-	int mapX = 20, mapY = 20;
-	String mapData[] = {"PWWWWWW       WWWWW ",
-			    " WWWWWWWWWWWW WWWWW ",
-			    " WWWWWWWWWWWW WWWWW ",
-			    " WWWWWWWWWWWW WWWWW ",
-			    " WWWWWWWWWWWW       ",
-			    " WWWWWWWWWWWW WWWWW ",
-			    " WWWWWWWWWWWW WWWWW ",
-			    " WWWW         WWWWW ",
-			    " WWWW WWWWWWWWWWWWW ",
-			    " WWWW WWWWWWWWWWWWW ",
-			    " WWWW WWWWWWWWWWWWW ",
-			    " WWWW WWWWWWWWWWWWW ",
-			    "              WWWWW ",
-			    "WWWWWWWWWWWWWWW     ",
-			    "                    ",
-			    "                    ",
-			    "                    ",
-			    "                    ",
-			    "                    ",
-			    "                   W"};
+	int mapX = 30, mapY = 20;
+	String mapData[] = {"PWWWWWW       WWWWW        WWW",
+			    " WWWWWWWWWWWW WWWWW WWWWWW WWW",
+			    " WWWWWWWWWWWW WWWWW WWWWWW WWW",
+			    " WWWWWWWWWWWW WWWWW WWWWWW WWW",
+			    " WWWWWWWWWWWW       WWWWWW WWW",
+			    " WWWWWWWWWWWW WWWWW WWWWWW WWW",
+			    " WWWWWWWWWWWW WWWWW WWWWWW WWW",
+			    " WWWW         WWWWW WWWWWW WWW",
+			    " WWWW WWWWWWWWWWWWW WWWWWW WWW",
+			    " WWWW WWWWWWWWWWWWW        WWW",
+			    " WWWW WWWWWWWWWWWWW WWWWWWWWWW",
+			    " WWWW WWWWWWWWWWWWW WWWWWWWWWW",
+			    "              WWWWW WWWWWWWWWW",
+			    "WWWWWWWWWWWWWWWWWWW WWWWWWWWWW",
+			    "WWW      WWWWWWWWWW WWWWWWWWWW",
+			    "WWW WWWWWWWWWWWWWWW WWWWWWWWWW",
+			    "WWW WWWWWWWWWWWWWWW WWWWWWWWWW",
+			    "WWW                 WWWWWWWWWW",
+			    "WWW WWWWWWWWWWWWWWWWWWWWWWWWWW",
+			    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"};
 	BufferedImage[][] playerImg = new BufferedImage[4][4];
 	int playerX, playerY;
 	int playerDirNo, playerNo;
@@ -158,13 +156,13 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 		int dx = 0, dy = 0;
 
 		switch(dir) {
-			case 0: dx = 1;
+			case 0: dy = 1;
 				break;
 			case 1: dy = -1;
 				break;
 			case 2: dx = -1;
 				break;
-			case 3: dy = 1;
+			case 3: dx = 1;
 				break;
 		}
 
@@ -192,14 +190,18 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 		int dir = -1;
 
 		switch(key) {
-			case KeyEvent.VK_LEFT: dir = 2; playerDirNo = 2; playerNo++;
-				break;
-			case KeyEvent.VK_RIGHT: dir = 0; playerDirNo = 3; playerNo++;
-				break;
-			case KeyEvent.VK_UP: dir = 1; playerDirNo = 1; playerNo++;
-				break;
-			case KeyEvent.VK_DOWN: dir = 3; playerDirNo = 0; playerNo++;
-				break;
+			case KeyEvent.VK_LEFT: dir = 2;
+					       playerDirNo = 2; playerNo++;
+					       break;
+			case KeyEvent.VK_RIGHT: dir = 3;
+					        playerDirNo = 3; playerNo++;
+					        break;
+			case KeyEvent.VK_UP: dir = 1;
+					     playerDirNo = 1; playerNo++;
+					     break;
+			case KeyEvent.VK_DOWN: dir = 0;
+					       playerDirNo = 0; playerNo++;
+					       break;
 		}
 
 		// try {
