@@ -47,11 +47,12 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 			    "WWW                 WWWWWWWWWW",
 			    "WWW WWWWWWWWWWWWWWWWWWWWWWWWWW",
 			    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"};
+
 	BufferedImage[][] playerImg = new BufferedImage[4][4];
 	int playerX, playerY;
 	int playerDirNo, playerNo;
 
-	int count = 1;
+	int steps = 1;
 	int range = 3;
 	
 	RogueLikeGamePanel() {
@@ -94,26 +95,8 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
  
  	@Override
  	public void paintComponent(Graphics g) {
-		if(count > -100) {
-			range = 5;
-		}
+		countSteps();
 
-		if(count > -50) {
-			range = 4;
-		}
-
-		if(count > 0) {
-			range = 3;
-		}
-
-		if(count > 50) {
-			range = 2;
-		}
-		
-		if(count > 100) {
-			range = 1;
-		}
-			
 		for(int y=-range; y<=range; y++) {
 			for(int x=-range; x<=range; x++) {
 				int xx = 40*(x+5), yy = 40*(y+5);
@@ -176,7 +159,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 		playerX += dx;
 		playerY += dy;
 		
-		count += 1;
+		steps += 1;
 	}
 
 	@Override
@@ -219,6 +202,28 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
+	}
+
+	void countSteps() {
+		if(steps > -100) {
+			range = 5;
+		}
+
+		if(steps > -50) {
+			range = 4;
+		}
+
+		if(steps > 0) {
+			range = 3;
+		}
+
+		if(steps > 50) {
+			range = 2;
+		}
+		
+		if(steps > 100) {
+			range = 1;
+		}
 	}
 }
 
