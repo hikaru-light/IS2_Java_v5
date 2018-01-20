@@ -49,12 +49,12 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"};
 
 	BufferedImage[][] playerImg = new BufferedImage[4][4];
-	BufferedImage[] lampImg = new BufferedImage[5];
+	BufferedImage[] lampImg = new BufferedImage[8];
 
 	int playerX, playerY;
 	int playerDirNo, playerNo;
 
-	int battery = 100;
+	double battery = 100;
 	int range = 3;
 
 	double time;
@@ -73,7 +73,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 				}
 			}
 
-			for(int i=0; i<5; i++) {
+			for(int i=0; i<8; i++) {
 				File lampFile = new File("./src/img/lamp"+i+".png");
 				lampImg[i] = ImageIO.read(lampFile);
 			}
@@ -148,20 +148,20 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 
 		displayTime(g);
 
-		battery--;
+		battery -= 0.3;
  	}
 
 	@Override
 	public void run() {
 		while (th != null) {
-			if(lampNo>3) {
+			if(lampNo>6) {
 				lampNo = 0;
 			} else {
 				lampNo++;
 			}
 
 	          	repaint();
-			sleep(500);
+			sleep(250);
 		}
 	}
 
