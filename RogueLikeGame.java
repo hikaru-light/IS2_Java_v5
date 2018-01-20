@@ -24,7 +24,7 @@ class RogueLikeGame {
 	}
 }
 
-class RogueLikeGamePanel extends JPanel implements KeyListener {
+class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 	char map[][];
 	int mapX = 30, mapY = 20;
 	String mapData[] = {"PWWWWWW       WWWWW        WWW",
@@ -54,8 +54,15 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 	int playerX, playerY;
 	int playerDirNo, playerNo;
 
-	int steps = 1;
+	int battery = 100;
 	int range = 3;
+
+	double time;
+	int remain = 100;
+	boolean gameover = false;
+
+	Thread th;
+	int lampNo = 0;
 
 	RogueLikeGamePanel() {
 		try {
@@ -96,19 +103,24 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 			}
 		}
 
+		th = new Thread(this);
+		th.start();
+
+		time = System.currentTimeMillis() * 0.001 + remain;
+
 		addKeyListener(this);
 		setFocusable(true);
  	}
 
  	@Override
  	public void paintComponent(Graphics g) {
-		countSteps();
+		setRange();
 
 		for(int y=-range; y<=range; y++) {
 			for(int x=-range; x<=range; x++) {
 				int xx = 40*(x+5), yy = 40*(y+5);
 				switch(map[playerY+y][playerX+x]) {
-					case 'W' : g.setColor(new Color(100+(int)(Math.random()*20), 35+(int)(Math.random()*5), 25+(int)(Math.random()*5)));
+					case 'W' : g.setColor(new Color(100, 35, 25));
 						   g.fillRect(xx, yy, 26, 10);
 						   g.fillRect(xx+32, yy, 8, 10);
 						   g.fillRect(xx, yy+15, 10, 10);
@@ -126,14 +138,40 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 
 					case 'L' : g.setColor(new Color(40, 30, 25));
 						   g.fillRect(xx, yy, 40, 40);
-						   g.drawImage(lampImg[0], xx+10, yy, this);
+						   g.drawImage(lampImg[lampNo], xx+10, yy, this);
 						   break;
 				}
 			}
 		}
 
 		playerDraw(g);
+
+		displayTime(g);
+
+		battery--;
  	}
+
+	@Override
+	public void run() {
+		while (th != null) {
+			if(lampNo>3) {
+				lampNo = 0;
+			} else {
+				lampNo++;
+			}
+
+	          	repaint();
+			sleep(500);
+		}
+	}
+
+	void sleep(int time) {
+		try { 
+			Thread.sleep(time); 
+		} catch (InterruptedException e) {
+			System.err.println(e.toString());
+		}
+	}		
 
 	void playerSet(int x, int y) {
 		playerX = x;
@@ -173,13 +211,11 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 
 		if(map[playerY+dy][playerX+dx] == 'L') {
 			map[playerY+dy][playerX+dx] = ' ';
-			steps = 0;
+			battery = 100; range = 3;
 		}
 
 		playerX += dx;
 		playerY += dy;
-
-		steps += 1;
 	}
 
 	@Override
@@ -207,12 +243,6 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 					       break;
 		}
 
-		// try {
-		//         Thread.sleep(30);
-		// } catch (InterruptedException e) {
-		// 	System.err.println(e.toString());
-		// }
-
 		if(dir >= 0) {
 			playerMove(dir);
 		}
@@ -224,17 +254,31 @@ class RogueLikeGamePanel extends JPanel implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 	}
 
-	void countSteps() {
-		if(steps > 0) {
-			range = 3;
+	void displayTime(Graphics g) {
+		if(gameover) {
+			g.setFont(new Font("TimeRoman", Font.BOLD, 18));
+			g.setColor(Color.red);
+			g.drawString("GAME OVER", 55, 50);
+		} else {
+			int dt = (int)(time - System.currentTimeMillis() * 0.001);
+			g.setFont(new Font("TimeRoman", Font.BOLD, 18));
+			g.setColor(Color.orange);
+			g.drawString("Time: " + dt, 55, 50);
+			
+			if(dt==0) {
+				gameover = true;
+			}
 		}
+	}
 
-		if(steps > 50) {
+	void setRange() {
+		if(battery < 50) {
 			range = 2;
 		}
 
-		if(steps > 100) {
+		if(battery <= 0) {
 			range = 1;
 		}
 	}
 }
+
