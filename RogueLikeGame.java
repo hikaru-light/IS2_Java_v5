@@ -108,7 +108,11 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 
  	@Override
  	public void paintComponent(Graphics g) {
-		setRange();
+		if(gameover) {
+			
+		} else {
+			setRange();
+		}
 
 		for(int y=-range; y<=range; y++) {
 			for(int x=-range; x<=range; x++) {
@@ -163,7 +167,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
-			System.err.println(e.toString());
+			// System.err.println(e.toString());
 		}
 	}
 
@@ -250,9 +254,12 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 
 	void displayTime(Graphics g) {
 		if(gameover) {
-			g.setFont(new Font("TimeRoman", Font.BOLD, 18));
+			g.setFont(new Font("TimeRoman", Font.BOLD, 40));
 			g.setColor(Color.red);
-			g.drawString("GAME OVER", 55, 50);
+			g.drawString("GAME OVER", 93, 235);
+			
+			th.interrupt();
+			range = 5; repaint();
 			setFocusable(false);
 		} else {
 			int dt = (int)(time - System.currentTimeMillis() * 0.001);
