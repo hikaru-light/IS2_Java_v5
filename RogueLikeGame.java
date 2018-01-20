@@ -27,26 +27,7 @@ class RogueLikeGame {
 class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 	char map[][];
 	int mapX = 30, mapY = 20;
-	String mapData[] = {"PWWWWWW       WWWWW        WWW",
-			    " WWWWWWWWWWWW WWWWW WWWWWW WWW",
-			    " WWWWWWWWWWWW WWWWW WWWWWW WWW",
-			    " WWWWWWWWWWWW WWWWW WWWWWW WWW",
-			    " WWWWWWWWWWWW       WWWWWW WWW",
-			    " WWWWWWWWWWWW WWWWW WWWWWW WWW",
-			    " WWWWWWWWWWWW WWWWW WWWWWW WWW",
-			    " WWWW         WWWWW WWWWWW WWW",
-			    " WWWW WWWWWWWWWWWWW WWWWWW WWW",
-			    " WWWW WWWWWWWWWWWWW        WWW",
-			    " WWWW WWWWWWWWWWWWW WWWWWWWWWW",
-			    " WWWW WWWWWWWWWWWWW WWWWWWWWWW",
-			    "              WWWWW WWWWWWWWWW",
-			    "WWWWWWWWWWWWWWWWWWW WWWWWWWWWW",
-			    "WWW     LWWWWWWWWWW WWWWWWWWWW",
-			    "WWW WWWWWWWWWWWWWWW WWWWWWWWWW",
-			    "WWW WWWWWWWWWWWWWWW WWWWWWWWWW",
-			    "WWW                 WWWWWWWWWW",
-			    "WWW WWWWWWWWWWWWWWWWWWWWWWWWWW",
-			    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"};
+	String[] mapData = new String[20];
 
 	BufferedImage[][] playerImg = new BufferedImage[4][4];
 	BufferedImage[] lampImg = new BufferedImage[8];
@@ -66,6 +47,19 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 
 	RogueLikeGamePanel() {
 		try {
+			File mapFile = new File("./src/map/data.txt");
+			FileReader fr = new FileReader(mapFile);
+			BufferedReader br = new BufferedReader(fr);
+			String str = br.readLine(); int count = 0;
+
+			while(str!=null) {
+			 	mapData[count] = str;
+				str = br.readLine();
+				count++;
+			}
+			
+			br.close();
+
 			for(int i=0; i<4; i++) {
 				for(int j=0; j<4; j++) {
 					File playerFile = new File("./src/img/player"+i+j+".png");
@@ -166,12 +160,12 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 	}
 
 	void sleep(int time) {
-		try { 
-			Thread.sleep(time); 
+		try {
+			Thread.sleep(time);
 		} catch (InterruptedException e) {
 			System.err.println(e.toString());
 		}
-	}		
+	}
 
 	void playerSet(int x, int y) {
 		playerX = x;
@@ -259,12 +253,13 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			g.setFont(new Font("TimeRoman", Font.BOLD, 18));
 			g.setColor(Color.red);
 			g.drawString("GAME OVER", 55, 50);
+			setFocusable(false);
 		} else {
 			int dt = (int)(time - System.currentTimeMillis() * 0.001);
 			g.setFont(new Font("TimeRoman", Font.BOLD, 18));
 			g.setColor(Color.orange);
-			g.drawString("Time: " + dt, 55, 50);
-			
+			g.drawString("TIME " + dt, 55, 50);
+
 			if(dt==0) {
 				gameover = true;
 			}
@@ -281,4 +276,3 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 		}
 	}
 }
-
