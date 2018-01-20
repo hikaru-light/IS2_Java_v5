@@ -57,7 +57,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 				str = br.readLine();
 				count++;
 			}
-			
+
 			br.close();
 
 			for(int i=0; i<4; i++) {
@@ -79,12 +79,12 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 
 		for(int w=0; w<5; w++) {
 			for(int x=0; x<mapX+10; x++) {
-				map[w][x] = 'W';
-				map[(mapY+5)+w][x] = 'W';
+				map[w][x] = 'B';
+				map[(mapY+5)+w][x] = 'B';
 			}
 			for(int y=0; y<mapY+10; y++) {
-				map[y][w] = 'W';
-				map[y][(mapX+5)+w] = 'W';
+				map[y][w] = 'B';
+				map[y][(mapX+5)+w] = 'B';
 			}
 		}
 
@@ -114,7 +114,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			for(int x=-range; x<=range; x++) {
 				int xx = 40*(x+5), yy = 40*(y+5);
 				switch(map[playerY+y][playerX+x]) {
-					case 'W' : g.setColor(new Color(100, 35, 25));
+					case 'B' : g.setColor(new Color(100, 35, 25));
 						   g.fillRect(xx, yy, 26, 10);
 						   g.fillRect(xx+32, yy, 8, 10);
 						   g.fillRect(xx, yy+15, 10, 10);
@@ -198,7 +198,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			return;
 		}
 
-		if(map[playerY+dy][playerX+dx] == 'W') {
+		if(map[playerY+dy][playerX+dx] == 'B') {
 			return;
 		}
 
