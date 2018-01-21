@@ -31,6 +31,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 
 	BufferedImage[][] playerImg = new BufferedImage[4][4];
 	BufferedImage[] lampImg = new BufferedImage[8];
+	BufferedImage stairsImg;
 
 	int playerX, playerY;
 	int playerDirNo, playerNo;
@@ -41,6 +42,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 	double time;
 	int remain = 100;
 	boolean gameover = false;
+	boolean gameclear = false;
 
 	Thread th;
 	int lampNo = 0;
@@ -71,6 +73,9 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 				File lampFile = new File("./src/img/lamp"+i+".png");
 				lampImg[i] = ImageIO.read(lampFile);
 			}
+
+			File stairsFile = new File("./src/img/stairs0.png");
+			stairsImg = ImageIO.read(stairsFile);
 		} catch(IOException e) {
 			System.err.println(e.toString());
 		}
@@ -109,7 +114,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
  	@Override
  	public void paintComponent(Graphics g) {
 		if(gameover) {
-			
+			range = 5;
 		} else {
 			setRange();
 		}
@@ -138,11 +143,23 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 						   g.fillRect(xx, yy, 40, 40);
 						   g.drawImage(lampImg[lampNo], xx+10, yy, this);
 						   break;
+
+					case 'S' : g.drawImage(stairsImg, xx, yy, this);
+						   break;
 				}
 			}
 		}
 
-		playerDraw(g);
+		if(gameclear) {
+			g.setFont(new Font("TimeRoman", Font.BOLD, 30));
+			g.setColor(new Color(0, 191, 255));
+			g.drawString("STAGE COMPLETED", 70, 235);
+			
+			th = null;
+			setFocusable(false);	
+		} else {
+			playerDraw(g);
+		}
 
 		displayTime(g);
 
@@ -212,6 +229,10 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			battery = 100; range = 3;
 		}
 
+		if(map[playerY+dy][playerX+dx] == 'S') {
+			gameclear = true;
+		}
+
 		playerX += dx;
 		playerY += dy;
 	}
@@ -258,14 +279,13 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			g.setColor(Color.red);
 			g.drawString("GAME OVER", 93, 235);
 			
-			th.interrupt();
-			range = 5; repaint();
+			th.interrupt(); repaint();
 			setFocusable(false);
 		} else {
 			int dt = (int)(time - System.currentTimeMillis() * 0.001);
 			g.setFont(new Font("TimeRoman", Font.BOLD, 18));
 			g.setColor(Color.orange);
-			g.drawString("TIME " + dt, 55, 50);
+			g.drawString("TIME : " + dt, 55, 50);
 
 			if(dt==0) {
 				gameover = true;
