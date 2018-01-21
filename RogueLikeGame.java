@@ -205,13 +205,13 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 		int dx = 0, dy = 0;
 
 		switch(dir) {
-			case 0: dy = 1;
+			case 0 : dy = 1;
 				break;
-			case 1: dy = -1;
+			case 1 : dy = -1;
 				break;
-			case 2: dx = -1;
+			case 2 : dx = -1;
 				break;
-			case 3: dx = 1;
+			case 3 : dx = 1;
 				break;
 		}
 
@@ -219,18 +219,13 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			return;
 		}
 
-		if(map[playerY+dy][playerX+dx] == 'B') {
-			return;
-		}
-
-
-		if(map[playerY+dy][playerX+dx] == 'L') {
-			map[playerY+dy][playerX+dx] = ' ';
-			battery = 100; range = 3;
-		}
-
-		if(map[playerY+dy][playerX+dx] == 'S') {
-			gameclear = true;
+		switch(map[playerY+dy][playerX+dx]) {
+			case 'B' : return;
+			case 'L' : map[playerY+dy][playerX+dx] = ' ';
+				   battery= 100; range = 3;
+				   break;
+			case 'S' : gameclear = true;
+				   break;
 		}
 
 		playerX += dx;
@@ -248,16 +243,16 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 		int dir = -1;
 
 		switch(key) {
-			case KeyEvent.VK_LEFT: dir = 2;
+			case KeyEvent.VK_LEFT : dir = 2;
 					       playerDirNo = 2; playerNo++;
 					       break;
-			case KeyEvent.VK_RIGHT: dir = 3;
+			case KeyEvent.VK_RIGHT : dir = 3;
 					        playerDirNo = 3; playerNo++;
 					        break;
-			case KeyEvent.VK_UP: dir = 1;
+			case KeyEvent.VK_UP : dir = 1;
 					     playerDirNo = 1; playerNo++;
 					     break;
-			case KeyEvent.VK_DOWN: dir = 0;
+			case KeyEvent.VK_DOWN : dir = 0;
 					       playerDirNo = 0; playerNo++;
 					       break;
 		}
