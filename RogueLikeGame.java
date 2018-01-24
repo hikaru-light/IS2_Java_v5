@@ -7,6 +7,8 @@ import java.awt.image.*;
 import java.io.*;
 import javax.imageio.ImageIO;
 
+import java.util.*;
+
 class RogueLikeGame {
 	public static void main(String[] args) {
 		JFrame fr = new JFrame("Dungeon");
@@ -26,7 +28,7 @@ class RogueLikeGame {
 
 class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 	char map[][];
-	int mapX = 30, mapY = 20;
+	int mapX = 50, mapY = 20;
 	String[] mapData = new String[20];
 
 	BufferedImage[][] playerImg = new BufferedImage[4][4];
@@ -35,17 +37,22 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 
 	int playerX, playerY;
 	int playerDirNo, playerNo;
+	int lampNo = 0;
 
 	double battery = 100;
 	int range = 3;
 
 	double time;
 	int remain = 100;
-	boolean gameover = false;
-	boolean gameclear = false;
+	int dt;
+	ArrayList<Integer> scoreList = new ArrayList<Integer>();
+	boolean newRecord = false;
 
-	Thread th;
-	int lampNo = 0;
+	boolean gameOver = false;
+	boolean gameCleared = false;
+
+	Thread th1;
+	int No;
 
 	RogueLikeGamePanel() {
 		try {
@@ -102,8 +109,8 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			}
 		}
 
-		th = new Thread(this);
-		th.start();
+		th1 = new Thread(this);
+		th1.start();
 
 		time = System.currentTimeMillis() * 0.001 + remain;
 
@@ -113,7 +120,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 
  	@Override
  	public void paintComponent(Graphics g) {
-		if(gameover) {
+		if(gameOver) {
 			range = 5;
 		} else {
 			setRange();
@@ -150,32 +157,48 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			}
 		}
 
-		if(gameclear) {
+		if(gameCleared) {
+			if(th1!=null){
+				scoreRecord(dt);
+				Mv th2 = new Mv();
+				th2.start();
+			}
+
+			th1 = null;
+
+			setFocusable(false);
+
 			g.setFont(new Font("TimeRoman", Font.BOLD, 30));
 			g.setColor(new Color(0, 191, 255));
-			g.drawString("STAGE COMPLETED", 70, 235);
-			
-			th = null;
-			setFocusable(false);	
+			g.drawString("STAGE COMPLETED", 70-No, 235);
+
+			for(int i=0; i<5; i++) {
+				g.setFont(new Font("TimeRoman", Font.BOLD, 18));
+				g.setColor(Color.orange);
+				g.drawString(i+1+".            "+scoreList.get(i), 903-No, 200+(i*20));
+			}
+
+			if(newRecord) {
+				g.setColor(Color.red);
+				g.drawString("NEW RECORD", 900-No, 150);
+			}
 		} else {
+			displayTime(g);
 			playerDraw(g);
+			battery -= 0.3;
 		}
-
-		displayTime(g);
-
-		battery -= 0.3;
  	}
 
 	@Override
 	public void run() {
-		while (th != null) {
+		while (th1 != null) {
 			if(lampNo>6) {
 				lampNo = 0;
 			} else {
 				lampNo++;
 			}
 
-	          	repaint();
+	    repaint();
 			sleep(250);
 		}
 	}
@@ -224,7 +247,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			case 'L' : map[playerY+dy][playerX+dx] = ' ';
 				   battery= 100; range = 3;
 				   break;
-			case 'S' : gameclear = true;
+			case 'S' : gameCleared = true;
 				   break;
 		}
 
@@ -255,6 +278,9 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			case KeyEvent.VK_DOWN : dir = 0;
 					       playerDirNo = 0; playerNo++;
 					       break;
+			// case KeyEvent.VK_E : th2 = new Magic();
+			// 		     th2.start();
+			// 		     break;
 		}
 
 		if(dir >= 0) {
@@ -269,21 +295,21 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 	}
 
 	void displayTime(Graphics g) {
-		if(gameover) {
+		if(gameOver) {
 			g.setFont(new Font("TimeRoman", Font.BOLD, 40));
 			g.setColor(Color.red);
 			g.drawString("GAME OVER", 93, 235);
-			
-			th.interrupt(); repaint();
+
+			th1.interrupt(); repaint();
 			setFocusable(false);
 		} else {
-			int dt = (int)(time - System.currentTimeMillis() * 0.001);
+			dt = (int)(time - System.currentTimeMillis() * 0.001);
 			g.setFont(new Font("TimeRoman", Font.BOLD, 18));
 			g.setColor(Color.orange);
 			g.drawString("TIME : " + dt, 55, 50);
 
 			if(dt==0) {
-				gameover = true;
+				gameOver = true;
 			}
 		}
 	}
@@ -297,4 +323,81 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			range = 1;
 		}
 	}
+
+// I can make this method more efficient.
+	void scoreRecord(int dt) {
+		try{
+  		File recordFile = new File("./src/record/data.txt");
+			FileReader fr = new FileReader(recordFile);
+			FileWriter fw = new FileWriter(recordFile, true);
+			BufferedReader br = new BufferedReader(fr);
+			String str = br.readLine();
+
+			while(str!=null) {
+				int num = Integer.parseInt(str);
+				scoreList.add(num);
+				str = br.readLine();
+			}
+
+			int max = scoreList.get(0);
+			for(int i=1; i<scoreList.size(); i++) {
+				int num = scoreList.get(i);
+				if(num>max) {
+					max = num;
+				}
+			}
+
+			if(dt>max) {
+				newRecord = true;
+			}
+
+			String sp = System.lineSeparator();
+			fw.write(dt+sp);
+
+			scoreList.add(dt);
+			Collections.sort(scoreList);
+			Collections.reverse(scoreList);
+
+			br.close(); fw.close();
+		}catch(IOException e){
+  		System.err.println(e.toString());
+		}
+	}
+
+	class Mv extends Thread {
+		@Override
+		public void run() {
+			sleep(3000);
+
+			for(int i=0; i<740; i++) {
+				No++;
+				repaint();
+				sleep(5);
+			}
+		}
+
+		void sleep(int time) {
+			try {
+				Thread.sleep(time);
+			} catch (InterruptedException e) {
+				// System.err.println(e.toString());
+			}
+		}
+	}
+
+	// void fire() {
+	// 	while(th2!=null) {
+	// 		System.out.println("P!");
+	// 		sleep(100);
+	// 	}
+	// }
+
 }
+
+// class Magic extends Thread {
+// 	@Override
+// 	public void run() {
+// 		RogueLikeGamePanel panel = new RogueLikeGamePanel();
+// 		panel.fire();
+// 	}
+// }
