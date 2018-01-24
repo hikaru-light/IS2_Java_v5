@@ -157,6 +157,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			}
 		}
 
+    // I can make this method more efficient.
 		if(gameCleared) {
 			if(th1!=null){
 				scoreRecord(dt);
@@ -278,9 +279,6 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			case KeyEvent.VK_DOWN : dir = 0;
 					       playerDirNo = 0; playerNo++;
 					       break;
-			// case KeyEvent.VK_E : th2 = new Magic();
-			// 		     th2.start();
-			// 		     break;
 		}
 
 		if(dir >= 0) {
@@ -324,7 +322,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 		}
 	}
 
-// I can make this method more efficient.
+  // I can make this method more efficient.
 	void scoreRecord(int dt) {
 		try{
   		File recordFile = new File("./src/record/data.txt");
@@ -364,6 +362,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 		}
 	}
 
+  // I can make this method more efficient.
 	class Mv extends Thread {
 		@Override
 		public void run() {
@@ -384,20 +383,4 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			}
 		}
 	}
-
-	// void fire() {
-	// 	while(th2!=null) {
-	// 		System.out.println("P!");
-	// 		sleep(100);
-	// 	}
-	// }
-
 }
-
-// class Magic extends Thread {
-// 	@Override
-// 	public void run() {
-// 		RogueLikeGamePanel panel = new RogueLikeGamePanel();
-// 		panel.fire();
-// 	}
-// }
