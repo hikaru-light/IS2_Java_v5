@@ -28,6 +28,7 @@ class RogueLikeGame {
 
 class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 	char map[][];
+	int mapNo;
 	int mapX = 50, mapY = 20;
 	String[] mapData = new String[20];
 
@@ -55,8 +56,9 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 	int No;
 
 	RogueLikeGamePanel() {
+		mapNo = (int)(Math.random()*5);
 		try {
-			File mapFile = new File("./src/map/data.txt");
+			File mapFile = new File("./src/map/data"+mapNo+".txt");
 			FileReader fr = new FileReader(mapFile);
 			BufferedReader br = new BufferedReader(fr);
 			String str = br.readLine(); int count = 0;
