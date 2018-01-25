@@ -44,7 +44,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 	int range = 3;
 
 	double time;
-	int remain = 100;
+	int remain = 60;
 	int dt;
 	ArrayList<Integer> scoreList = new ArrayList<Integer>();
 	boolean newRecord = false;
@@ -168,7 +168,6 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			}
 
 			th1 = null;
-
 			setFocusable(false);
 
 			g.setFont(new Font("TimeRoman", Font.BOLD, 30));
@@ -183,12 +182,14 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 
 			if(newRecord) {
 				g.setColor(Color.red);
-				g.drawString("NEW RECORD", 900-No, 150);
+				g.drawString("NEW RECORD", 900-No, 160);
+			} else {
+				g.drawString("TOP 5 SCORE", 900-No, 160);
 			}
 		} else {
 			displayTime(g);
 			playerDraw(g);
-			battery -= 0.3;
+			battery -= 0.5;
 		}
  	}
 
@@ -202,7 +203,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 			}
 
 	    repaint();
-			sleep(250);
+			sleep(230);
 		}
 	}
 
@@ -296,12 +297,12 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 
 	void displayTime(Graphics g) {
 		if(gameOver) {
+			th1.interrupt(); repaint();
+			setFocusable(false);
+			
 			g.setFont(new Font("TimeRoman", Font.BOLD, 40));
 			g.setColor(Color.red);
 			g.drawString("GAME OVER", 93, 235);
-
-			th1.interrupt(); repaint();
-			setFocusable(false);
 		} else {
 			dt = (int)(time - System.currentTimeMillis() * 0.001);
 			g.setFont(new Font("TimeRoman", Font.BOLD, 18));
@@ -368,7 +369,7 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 	class Mv extends Thread {
 		@Override
 		public void run() {
-			sleep(3000);
+			sleep(2500);
 
 			for(int i=0; i<740; i++) {
 				No++;
