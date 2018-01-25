@@ -1,5 +1,6 @@
 *.class
 *.swp
 
-data.txt
+/report
 
+data.txt

@@ -299,10 +299,10 @@ class RogueLikeGamePanel extends JPanel implements KeyListener, Runnable {
 		if(gameOver) {
 			th1.interrupt(); repaint();
 			setFocusable(false);
-			
-			g.setFont(new Font("TimeRoman", Font.BOLD, 40));
+
+			g.setFont(new Font("TimeRoman", Font.BOLD, 50));
 			g.setColor(Color.red);
-			g.drawString("GAME OVER", 93, 235);
+			g.drawString("GAME OVER", 63, 237);
 		} else {
 			dt = (int)(time - System.currentTimeMillis() * 0.001);
 			g.setFont(new Font("TimeRoman", Font.BOLD, 18));
